@@ -1,0 +1,35 @@
+[tools]
+go = "latest"
+
+[tasks.build]
+description = "Build the wip binary"
+depends     = ["fmt"]
+sources     = ["**/*.go", "go.sum"]
+outputs     = ["wip"]
+run         = "go build -o wip ."
+
+[tasks.fmt]
+description = "Format Go sources"
+run         = "gofmt -w ."
+
+[tasks.vet]
+hide    = true  # use check
+depends = ["fmt"]
+run     = "go vet ./..."
+
+[tasks.fix]
+hide    = true  # use check
+depends = ["fmt"]
+run     = "go fix ./..."
+
+[tasks.golangci-lint]
+hide    = true  # use check
+depends = ["fmt"]
+run     = "golangci-lint run ./..."
+
+[tasks.check]
+depends = ["vet", "fix", "golangci-lint"]
+
+[tasks.test]
+description = "Unit tests"
+run         = "gotestsum -- -race ./..."

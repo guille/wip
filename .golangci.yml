@@ -1,0 +1,11 @@
+version: "2"
+linters:
+  settings:
+    errcheck:
+      # Terminal output and best-effort cleanup.
+      exclude-functions:
+        - fmt.Fprint
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - os.Remove
+        - (*os.File).Close
