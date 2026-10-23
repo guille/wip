@@ -14,6 +14,13 @@ _wip_ids() {
   _describe -t ids 'workstream' ids "$@"
 }
 
+# Open workstreams, or closed and archived ones when no open ID matches.
+_wip_ids_fallback() {
+  local n=$compstate[nmatches]
+  _wip_ids "$@"
+  (( compstate[nmatches] > n )) || _wip_ids --all "$@"
+}
+
 # Scopes already in use, from `wip _scopes`.
 _wip_scopes() {
   local -a scopes=(${(f)"$(_call_program scopes wip _scopes 2>/dev/null)"})
@@ -67,7 +74,7 @@ _wip() {
             '--archived[include archived items]' && ret=0
           ;;
         show)
-          _arguments '1:workstream:_wip_ids --all' && ret=0
+          _arguments '1:workstream:_wip_ids_fallback' && ret=0
           ;;
         report)
           _arguments \
@@ -96,7 +103,7 @@ _wip() {
           _arguments '1:workstream:_wip_ids' '2:who:(me)' '*:reason' && ret=0
           ;;
         resume)
-          _arguments '1:workstream:_wip_ids --all' && ret=0
+          _arguments '1:workstream:_wip_ids_fallback' && ret=0
           ;;
         done|drop)
           _arguments '1:workstream:_wip_ids' '*:note' && ret=0
